@@ -4,7 +4,7 @@
 }: let
   # Metadata
   # -----------------------------------------------------------------------
-  baseDomain = "bitte.aws.iohkdev.io";
+  baseDomain = "dapps.aws.iohkdev.io";
 in rec {
   # App Component Import Parameterization
   # -----------------------------------------------------------------------
@@ -28,7 +28,7 @@ in rec {
     inherit (args.patroni) namespace;
   in rec {
     # App constants
-    WALG_S3_PREFIX = "s3://iohk-bitte-world/backups/${namespace}/walg";
+    WALG_S3_PREFIX = "s3://iohk-dapps-world/backups/${namespace}/walg";
 
     # Job mod constants
     patroniMods.scaling = 3;
@@ -43,7 +43,7 @@ in rec {
     tempoMods.scaling = 1;
     tempoMods.resources.cpu = 2000;
     tempoMods.resources.memory = 2 * 1024;
-    tempoMods.storageS3Bucket = "iohk-bitte-world-tempo";
+    tempoMods.storageS3Bucket = "iohk-dapps-world-tempo";
     tempoMods.storageS3Endpoint = "s3.eu-central-1.amazonaws.com";
   };
 }
