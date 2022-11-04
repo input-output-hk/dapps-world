@@ -1,0 +1,27 @@
+{
+	"encrypt": "ENC[AES256_GCM,data:UUnPIyBcjKPaeLe4Xfm5HMPP+uDnXR0RBfFBMuJB8hBM1vkEvnEaA1inJt4=,iv:0dvrEAPe274TCqyTK9sTdrTGqRjTT69VcGBfSnRf9x8=,tag:y6D16Q6kpbNMvU8E7rVz7A==,type:str]",
+	"acl": {
+		"tokens": {
+			"initial_management": "ENC[AES256_GCM,data:0iQ3w8pE+q+O+jGb+NKPU3BTEtonqcU5nKGNawBvxkhbdPOE,iv:DrxRhJb+ltF20iTnOnWK3hQvTrztymST/fXfJMoLAPU=,tag:2wdGzS5LwImLarbYcQ9UKg==,type:str]"
+		}
+	},
+	"sops": {
+		"kms": [
+			{
+				"arn": "arn:aws:kms:us-east-1:677160962006:key/e8ccc1e3-c590-42f9-bda3-f7a55dcd787c",
+				"created_at": "2022-11-03T04:10:21Z",
+				"enc": "AQICAHhzjjx3KVCQF9jJWIyFhTlWsFtrpYMPeAiIzpBlMG7irwEESRx3brONECISC0oKESODAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMxU3tgg/xye4Hr/H+AgEQgDtkGrZSBxZP2BrY/fksbwg58jhuVkllNxsMe8I0KadfUJF3wsimuEYBxHa6cq142An70A0bNNcWrIv+7Q==",
+				"aws_profile": ""
+			}
+		],
+		"gcp_kms": null,
+		"azure_kv": null,
+		"hc_vault": null,
+		"age": null,
+		"lastmodified": "2022-11-03T04:10:22Z",
+		"mac": "ENC[AES256_GCM,data:DCnOiXXDdpMVjawfD9baGIZZyxEd7aIjuwPOUWyf7Agi8Oy3g8fcS9PkyPpKbVYg6yGiECt8HgUzL4ep9hlvCKalN6W+lwNWNrLyaHFLlDwZdsPebFouugPEPiCnmFOlGwX9JuuuS8xu0bAtkyqk/mubjfAjq3vwgIb8/x1Y/2U=,iv:Afg5f/Jwi6779pSEgy/uESKXvVjBmJjzFEn49UbTREk=,tag:5svJ+LDgn3QOwPTF6AtHxA==,type:str]",
+		"pgp": null,
+		"unencrypted_suffix": "_unencrypted",
+		"version": "3.7.2"
+	}
+}

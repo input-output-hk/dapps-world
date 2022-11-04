@@ -1,0 +1,33 @@
+/workbench
+
+# numtide/devshell
+.data
+
+# direnv/direnv + divnix/std
+.std
+.envrc.local
+
+# hashicorp/terraform
+.terraform
+config.tf.json
+*.plan
+
+# iog/bitte
+secrets/
+
+# nixos/nix
+result*
+
+# misc
+*.swp
+/.direnv
+
+# nixago: ignore-linked-files
+.editorconfig
+adrgen.config.yml
+lefthook.yml
+treefmt.toml
+.conform.yaml
+
+# nixago-auto-created: mdbook-build-folder
+book/**
