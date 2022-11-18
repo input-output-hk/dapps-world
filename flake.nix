@@ -5,10 +5,10 @@
     n2c.follows = "std/n2c";
     data-merge.follows = "std/dmerge";
     # --- Bitte Stack ----------------------------------------------
-    bitte.url = "github:input-output-hk/bitte/equinix";
-    # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/equinix";
-    bitte-cells.url = "github:input-output-hk/bitte-cells/token-alert-update";
-    # bitte-cells.url = "path:/home/jlotoski/work/iohk/bitte-cells-wt/token-alert-update";
+    bitte.url = "github:input-output-hk/bitte";
+    # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
+    bitte-cells.url = "github:input-output-hk/bitte-cells";
+    # bitte-cells.url = "path:/home/jlotoski/work/iohk/bitte-cells-wt/bitte-cells";
     # --------------------------------------------------------------
     # --- Auxiliary Nixpkgs ----------------------------------------
     # nixpkgs.follows = "bitte/nixpkgs";
@@ -21,12 +21,9 @@
       inputs.bitte.follows = "bitte";
     };
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
+    # --------------------------------------------------------------
     nixpkgs-vector.url = "github:NixOS/nixpkgs/30d3d79b7d3607d56546dd2a6b49e156ba0ec634";
     tullia.url = "github:input-output-hk/tullia";
-    deploy-rs.url = "github:serokell/deploy-rs";
-    # --------------------------------------------------------------
-    openziti.url = "github:johnalotoski/openziti-bins";
-    # openziti.url = "path:/home/jlotoski/work/johnalotoski/openziti-bins-wt/openziti-bins";
   };
 
   outputs = inputs: let

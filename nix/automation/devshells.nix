@@ -2,7 +2,7 @@
   inputs,
   cell,
 }: let
-  inherit (inputs) capsules bitte-cells bitte deploy-rs nixpkgs;
+  inherit (inputs) capsules bitte-cells bitte nixpkgs;
   inherit (inputs.std) std;
   inherit (inputs.std.lib) dev;
 
@@ -64,7 +64,6 @@ in {
       dappsWorld = withCategory "dapps-world";
     in
       with nixpkgs; [
-        (dappsWorld {package = deploy-rs.defaultPackage;})
         (dappsWorld {package = httpie;})
       ];
   };

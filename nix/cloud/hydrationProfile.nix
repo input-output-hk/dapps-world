@@ -22,7 +22,6 @@ in {
 
     cluster = {
       name = "dapps-world";
-      infraType = "awsExt";
 
       adminNames = ["parthiv.seetharaman"];
       # adminGithubTeamNames = lib.mkForce [ "non-existent-team" ];
