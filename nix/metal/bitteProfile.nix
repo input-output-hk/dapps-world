@@ -29,7 +29,6 @@ in {
     };
   in {
     secrets.encryptedRoot = ./encrypted;
-    age.encryptedRoot = ./encrypted-prem;
 
     nix = {
       binaryCaches = ["https://hydra.iohk.io"];
@@ -194,52 +193,6 @@ in {
               services.traefik.useVaultBackend = true;
             }
           ];
-        };
-
-        # GlusterFS storage nodes
-        storage-0 = {
-          instanceType = "t3a.small";
-          privateIP = "172.16.0.30";
-          subnet = config.cluster.vpc.subnets.core-1;
-          volumeSize = 40;
-          modules = [(bitte + /profiles/storage.nix)];
-          securityGroupRules = {inherit (sr) internal internet ssh;};
-          ebsVolume = {
-            iops = 3000; # 3000..16000
-            size = 500; # GiB
-            type = "gp3";
-            throughput = 125; # 125..1000 MiB/s
-          };
-        };
-
-        storage-1 = {
-          instanceType = "t3a.small";
-          privateIP = "172.16.1.30";
-          subnet = config.cluster.vpc.subnets.core-2;
-          volumeSize = 40;
-          modules = [(bitte + /profiles/storage.nix)];
-          securityGroupRules = {inherit (sr) internal internet ssh;};
-          ebsVolume = {
-            iops = 3000; # 3000..16000
-            size = 500; # GiB
-            type = "gp3";
-            throughput = 125; # 125..1000 MiB/s
-          };
-        };
-
-        storage-2 = {
-          instanceType = "t3a.small";
-          privateIP = "172.16.2.30";
-          subnet = config.cluster.vpc.subnets.core-3;
-          volumeSize = 40;
-          modules = [(bitte + /profiles/storage.nix)];
-          securityGroupRules = {inherit (sr) internal internet ssh;};
-          ebsVolume = {
-            iops = 3000; # 3000..16000
-            size = 500; # GiB
-            type = "gp3";
-            throughput = 125; # 125..1000 MiB/s
-          };
         };
       };
     };
