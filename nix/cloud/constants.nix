@@ -2,30 +2,24 @@
   inputs,
   cell,
 }: let
+in rec {
   # Metadata
   # -----------------------------------------------------------------------
   baseDomain = "dapps.aws.iohkdev.io";
-in rec {
+
   # App Component Import Parameterization
   # -----------------------------------------------------------------------
-  args = {
-    patroni = {
-      namespace = "patroni";
+  namespaces = {
+    infra = {
+      namespace = "infra";
       domain = "${baseDomain}";
-      nodeClass = "patroni";
-      datacenters = ["eu-central-1"];
-    };
-
-    tempo = {
-      namespace = "tempo";
-      domain = "${baseDomain}";
-      nodeClass = "tempo";
-      datacenters = ["eu-central-1"];
+      nodeClass = "infra";
+      datacenters = ["us-east-1" "eu-central-1"];
     };
   };
 
   patroni = let
-    inherit (args.patroni) namespace;
+    inherit (namespaces.infra) namespace;
   in rec {
     # App constants
     WALG_S3_PREFIX = "s3://iohk-dapps-world/backups/${namespace}/walg";
@@ -37,7 +31,7 @@ in rec {
   };
 
   tempo = let
-    inherit (args.tempo) namespace;
+    inherit (namespaces.tempo) namespace;
   in rec {
     # Job mod constants
     tempoMods.scaling = 1;

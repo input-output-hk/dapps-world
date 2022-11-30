@@ -6,9 +6,7 @@
     data-merge.follows = "std/dmerge";
     # --- Bitte Stack ----------------------------------------------
     bitte.url = "github:input-output-hk/bitte";
-    # bitte.url = "path:/home/jlotoski/work/iohk/bitte-wt/bitte";
     bitte-cells.url = "github:input-output-hk/bitte-cells";
-    # bitte-cells.url = "path:/home/jlotoski/work/iohk/bitte-cells-wt/bitte-cells";
     # --------------------------------------------------------------
     # --- Auxiliary Nixpkgs ----------------------------------------
     # nixpkgs.follows = "bitte/nixpkgs";
@@ -22,7 +20,7 @@
     };
     nix-inclusive.url = "github:input-output-hk/nix-inclusive";
     # --------------------------------------------------------------
-    nixpkgs-vector.url = "github:NixOS/nixpkgs/30d3d79b7d3607d56546dd2a6b49e156ba0ec634";
+    cardano-world.url = "github:input-output-hk/cardano-world";
     tullia.url = "github:input-output-hk/tullia";
   };
 
@@ -47,6 +45,7 @@
         (functions "library")
         (installables "packages")
         (functions "hydrationProfile")
+        (functions "hydrationProfiles")
         (runnables "jobs")
         (devshells "devshells")
 
@@ -72,8 +71,7 @@
         }
     )
     {
-      patroni = bitte.lib.mkNomadJobs "patroni" nomadEnvs;
-      tempo = bitte.lib.mkNomadJobs "tempo" nomadEnvs;
+      infra = bitte.lib.mkNomadJobs "infra" nomadEnvs;
     }
     (inputs.tullia.fromStd {
       actions = inputs.std.harvest inputs.self ["cloud" "actions"];

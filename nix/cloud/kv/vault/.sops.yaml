@@ -1,3 +1,7 @@
 creation_rules:
   - path_regex: patroni/*
     hc_vault_transit_uri: "https://vault.dapps.aws.iohkdev.io/v1/sops/keys/ops"
+  - path_regex: db-sync/*
+    hc_vault_transit_uri: "https://vault.dapps.aws.iohkdev.io/v1/sops/keys/ops"
+  - path_regex: chainseek/*
+    hc_vault_transit_uri: "https://vault.dapps.aws.iohkdev.io/v1/sops/keys/ops"

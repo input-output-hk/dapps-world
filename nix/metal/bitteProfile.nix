@@ -44,54 +44,67 @@ in {
         defaultModules = [(bitte + "/profiles/client.nix")];
 
         eachRegion = attrs: [
+          (attrs // {region = "us-east-1";})
           (attrs // {region = "eu-central-1";})
           (attrs // {region = "eu-west-1";})
-          (attrs // {region = "us-east-1";})
         ];
       in
         lib.listToAttrs
         (
-          lib.forEach
-          [
-            # Infra Nodes
-            {
-              instanceType = "t3.2xlarge";
-              desiredCapacity = 6;
-              volumeSize = 1500;
-              region = "us-east-1";
-              modules =
-                defaultModules
-                ++ [
-                  (
-                    bittelib.mkNomadHostVolumesConfig
-                    ["infra-persist-cardano-node-local"]
-                    (n: "/var/lib/nomad-volumes/${n}")
-                  )
-                  (
-                    bittelib.mkNomadHostVolumesConfig
-                    ["infra-persist-db-sync-local"]
-                    (n: "/mnt/gv0/${n}")
-                  )
-                  (
-                    bittelib.mkNomadHostVolumesConfig
-                    ["infra-database"]
-                    (n: "/var/lib/nomad-volumes/${n}")
-                  )
-                  # for scheduling constraints
-                  {services.nomad.client.meta.patroni = "yeah";}
-                  {services.nomad.client.meta.cardano = "yeah";}
-                ];
-              node_class = "infra";
-            }
-            # Development NodeClass -- only one node
-            {
-              region = "us-east-1";
-              instanceType = "t3a.xlarge";
-              volumeSize = 500;
-              modules = defaultModules ++ [rabbit.nixosProfiles.client];
-              node_class = "development";
-            }
-          ]
+          lib.forEach (
+            (
+              eachRegion
+              # Infra Nodes
+              {
+                instanceType = "t3.2xlarge";
+                desiredCapacity = 2;
+                volumeSize = 1500;
+                modules =
+                  defaultModules
+                  ++ [
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["infra-persist-cardano-node-local"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["infra-persist-db-sync-local"]
+                      (n: "/mnt/gv0/${n}")
+                    )
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["infra-database"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
+                    # for scheduling constraints
+                    {services.nomad.client.meta.patroni = "yeah";}
+                    {services.nomad.client.meta.cardano = "yeah";}
+                  ];
+                node_class = "infra";
+              }
+            )
+            ++ (
+              eachRegion
+              # Marlowe NodeClass -- only one node
+              {
+                region = "us-east-1";
+                instanceType = "t3a.2xlarge";
+                # desiredCapacity = 1;
+                volumeSize = 500;
+                modules =
+                  defaultModules
+                  ++ [
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["marlowe-persist-cardano-node-local"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
+                  ];
+                node_class = "marlowe";
+              }
+            )
+          )
           (args: let
             attrs =
               {

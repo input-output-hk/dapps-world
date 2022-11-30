@@ -1,0 +1,18 @@
+pgUser: ENC[AES256_GCM,data:Yghfy6LX3InbWIAkXbc=,iv:gXwAJAuo4CxrzXua9ZIX0fxCgoWp3p8C1NKesvA7MyM=,tag:7zxX3dp6nTUJsWC8vqWR8Q==,type:str]
+pgPass: ENC[AES256_GCM,data:CKsWb0vpifYM0pdrHGL+fwnKiT+mr1jYMTsevo9hqTI=,iv:8MvuE7JpU4tGqIHF/VT+osWU4v/3tiiMg17LKw09r88=,tag:4ohhDzqBEXCZOF1QeTwAaw==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault:
+        - vault_address: https://vault.dapps.aws.iohkdev.io
+          engine_path: sops
+          key_name: ops
+          created_at: "2022-11-19T00:18:40Z"
+          enc: vault:v1:/AdhVjeI28Iq5tBGZKGxDl4kIMkHak/i5ExZwZLbYewjcaoM7qeCNNtJdxi0YhtzURHWdH4cNqNGRnxn
+    age: []
+    lastmodified: "2022-11-19T00:18:41Z"
+    mac: ENC[AES256_GCM,data:dtvc5ac+ShbtDbDWZ185RsxG26p7N/15jJ43jz1Dljy6wCtPUrotmOiZ2CQy6tf2niaUDrJwX6xAn3nBF13ZYspNJUaZs2SzfGHWw653NQED68F24KaYi8pARn91cyFL5xlt9Z+EusWL0Sxjj6Ecrl0SUQBXVNf4dwhHoWm5wB8=,iv:JgXe4W+hBrsREX9iBVpALXeNNB7CcfohwyqKAu0Giew=,tag:jz+svUx+k/8dXmvR3Ggqvg==,type:str]
+    pgp: []
+    unencrypted_suffix: _unencrypted
+    version: 3.7.3

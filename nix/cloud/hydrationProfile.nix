@@ -2,7 +2,9 @@
   inputs,
   cell,
 }: let
-  inherit (inputs) bitte-cells;
+  inherit (inputs) bitte-cells cardano-world cells;
+  inherit (cells) marlowe;
+  inherit (cardano-world) cardano;
 in {
   # Bitte Hydrate Module
   # -----------------------------------------------------------------------
@@ -10,11 +12,15 @@ in {
   default = {
     lib,
     bittelib,
+    config,
     ...
   }: {
     imports = [
-      (bitte-cells.patroni.hydrationProfiles.hydrate-cluster ["patroni"])
-      (bitte-cells.tempo.hydrationProfiles.hydrate-cluster ["tempo"])
+      (bitte-cells.patroni.hydrationProfiles.hydrate-cluster ["infra"])
+      (bitte-cells.tempo.hydrationProfiles.hydrate-cluster ["infra"])
+      cardano.hydrationProfiles.workload-policies-cardano
+      cardano.hydrationProfiles.workload-policies-db-sync
+      marlowe.hydrationProfiles.workload-policies-marlowe-runtime
     ];
 
     # NixOS-level hydration
@@ -25,8 +31,7 @@ in {
 
       adminNames = ["parthiv.seetharaman"];
       # adminGithubTeamNames = lib.mkForce [ "non-existent-team" ];
-      developerGithubNames = ["shlevy"];
-      developerGithubTeamNames = [];
+      developerGithubTeamNames = ["marlowe" "plutus-core" "plutus-tools"];
       domain = "dapps.aws.iohkdev.io";
       kms = "arn:aws:kms:us-east-1:677160962006:key/e8ccc1e3-c590-42f9-bda3-f7a55dcd787c";
       s3Bucket = "iohk-dapps-world";
@@ -35,8 +40,8 @@ in {
 
     services = {
       nomad.namespaces = {
-        patroni = {description = "patroni";};
-        tempo = {description = "tempo";};
+        infra = {description = "Common services";};
+        marlowe = {description = "marlowe services";};
       };
     };
 
@@ -75,12 +80,14 @@ in {
           };
         };
 
-        consul.developer = {
-          service_prefix."*" = {
-            policy = "write";
-          };
-          key_prefix."test" = {
-            policy = "write";
+        consul = {
+          developer = {
+            service_prefix."*" = {
+              policy = "write";
+            };
+            key_prefix."test" = {
+              policy = "write";
+            };
           };
         };
 
@@ -119,7 +126,7 @@ in {
             quota.policy = "read";
             node.policy = "read";
             host_volume."*".policy = "write";
-            namespace."test" = {
+            namespace."marlowe" = {
               policy = "write";
               capabilities = [
                 "submit-job"
@@ -208,8 +215,6 @@ in {
     };
 
     # application state (terraform)
-    # --------------
-    /*
     tf.hydrate-app.configuration = let
       vault' = {
         dir = ./. + "/kv/vault";
@@ -228,6 +233,5 @@ in {
         # inherit (consul) consul_keys;
       };
     };
-    */
   };
 }
