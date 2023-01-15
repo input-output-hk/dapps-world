@@ -1,0 +1,17 @@
+token: ENC[AES256_GCM,data:Nyunn1huGRsSV1OYFTcNGyI0mNOYhxEnOHjFS4Oz5Ro4N+PIAdbBiA==,iv:ixd4NcnaOyt2LTPRCHtOwCvxhM7dAzty7dRt027uLGg=,tag:/rQVO3NYBvzIHsZMLha5bw==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault:
+        - vault_address: https://vault.dapps.aws.iohkdev.io
+          engine_path: sops
+          key_name: ops
+          created_at: "2023-01-12T18:43:58Z"
+          enc: vault:v1:8CpmWxagCKlhDG7mi4wh469JAZpFVlEr8PC0540OKPKCmbeT78QRbvNSseHl7wIhLA8DKdKJibXzjQvz
+    age: []
+    lastmodified: "2023-01-12T18:43:59Z"
+    mac: ENC[AES256_GCM,data:1rhE2LFu8bUQ+rmp0XwEGlGkB2km5QAoIrgbJ/yptuICzYdRe3jNK2ibAN/CMG4/LLDDh8yFsj6SzQcaYhPObc4fGi7D4/z6jIxTLPYUMG61v4PQMv+Vsft3SnxX837KN4xfsjURKdeznTfNUOcbWxY2t7o6c+xTGhobFtfiu48=,iv:U3GnLpfBP5I7rykB+mQgz7/NR8OoY70S/iLrxbV48n0=,tag:ujWcMr5iLYxluu+IAGcVjA==,type:str]
+    pgp: []
+    unencrypted_suffix: _unencrypted
+    version: 3.7.3

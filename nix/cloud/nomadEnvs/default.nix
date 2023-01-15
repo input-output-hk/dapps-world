@@ -78,7 +78,11 @@ in {
 
     db-sync-preview = mkDbSyncJob "preview";
 
-    db-sync-mainnet = mkDbSyncJob "mainnet";
+    db-sync-mainnet = merge (mkDbSyncJob "mainnet") {
+      job.db-sync-mainnet.group.db-sync.task.node = {
+        resources.memory = 8192;
+      };
+    };
 
     tempo = let
       inherit
@@ -109,5 +113,37 @@ in {
           resources = {inherit (tempoMods.resources) cpu memory;};
         };
       };
+  };
+  plutus = {
+    benchmark = {
+      job.benchmark = {
+        datacenters = ["us-east-1"];
+        type = "service";
+        namespace = "plutus";
+
+        constraint = [
+          {
+            attribute = "\${node.class}";
+            operator = "=";
+            value = "plutus-benchmark";
+          }
+        ];
+        spread = [
+          {
+            attribute = "\${node.datacenter}";
+            weight = "100";
+          }
+        ];
+        group.benchmark = {
+          count = 1;
+          task.benchmark = {
+            drivier = "exec";
+            config = {
+              command = "/usr/bin/env bash";
+            };
+          };
+        };
+      };
+    };
   };
 }

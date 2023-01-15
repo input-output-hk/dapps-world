@@ -100,6 +100,11 @@ in {
                       ["marlowe-persist-cardano-node-local"]
                       (n: "/var/lib/nomad-volumes/${n}")
                     )
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["marlowe-persist-ssh"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
                   ];
                 node_class = "marlowe";
               }
@@ -183,30 +188,48 @@ in {
           ];
         };
 
-        routing = {
-          instanceType = "t3a.small";
-          privateIP = "172.16.1.20";
-          subnet = cluster.vpc.subnets.core-2;
-          volumeSize = 30;
-          securityGroupRules = {inherit (sr) internet internal ssh http https routing;};
-          route53.domains = [
-            "*.${cluster.domain}"
-            "consul.${cluster.domain}"
-            "docker.${cluster.domain}"
-            "monitoring.${cluster.domain}"
-            "nomad.${cluster.domain}"
-            "vault.${cluster.domain}"
-          ];
+        routing =
+          let
+            tcpEntrypoints = {
+              ssh-marlowe-mainnet = 40022;
+              # middle number is testnet magic
+              ssh-marlowe-preprod = 40122;
+              ssh-marlowe-preview = 40222;
+            };
+          in {
+            instanceType = "t3a.small";
+            privateIP = "172.16.1.20";
+            subnet = cluster.vpc.subnets.core-2;
+            volumeSize = 30;
+            securityGroupRules = {
+              inherit (sr) internet internal ssh http https routing;
+            } // lib.mapAttrs (n: port: {
+              inherit port;
+              cidrs = ["0.0.0.0/0"];
+            }) tcpEntrypoints;
 
-          modules = [
-            (bitte + /profiles/routing.nix)
-            {
-              services.oauth2_proxy.email.domains = ["iohk.io" "atixlabs.com"];
-              services.traefik.acmeDnsCertMgr = false;
-              services.traefik.useVaultBackend = true;
-            }
-          ];
-        };
+            route53.domains = [
+              "*.${cluster.domain}"
+              "consul.${cluster.domain}"
+              "docker.${cluster.domain}"
+              "monitoring.${cluster.domain}"
+              "nomad.${cluster.domain}"
+              "vault.${cluster.domain}"
+            ];
+
+            modules = [
+              (bitte + /profiles/routing.nix)
+              {
+                services.oauth2_proxy.email.domains = ["iohk.io" "atixlabs.com"];
+                services.traefik.acmeDnsCertMgr = false;
+                services.traefik.useVaultBackend = true;
+                services.traefik.staticConfigOptions.entryPoints =
+                  lib.mapAttrs (_: port: {
+                    address = ":${toString port}";
+                  }) tcpEntrypoints;
+              }
+            ];
+          };
       };
     };
   };

@@ -35,11 +35,13 @@
       # debug = ["cells" "cloud" "nomadEnvs"];
       cellBlocks = with inputs.std.blockTypes; [
         (data "nomadEnvs")
+        (data "nomadTasks")
         (data "constants")
         (data "alerts")
         (data "dashboards")
         (nixago "nixago")
         (runnables "entrypoints")
+        (runnables "operables")
         (functions "bitteProfile")
         (functions "oci-images")
         (functions "library")

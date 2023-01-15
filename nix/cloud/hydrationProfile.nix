@@ -78,6 +78,9 @@ in {
             "secret/data/vbk/vit-testnet/*" = [c r u d l];
             "secret/metadata/vbk/vit-testnet/*" = [c r u d l];
           };
+          sshd-github.path = caps {
+            "kv/data/sshd-github/*" = [ r l ];
+          };
         };
 
         consul = {

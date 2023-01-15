@@ -65,6 +65,7 @@ in {
     in
       with nixpkgs; [
         (dappsWorld {package = httpie;})
+        (dappsWorld {package = cell.packages.sync-ssh-keys;})
       ];
   };
 }
