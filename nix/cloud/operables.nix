@@ -1,14 +1,15 @@
-{ inputs, cell }:
-let
+{
+  inputs,
+  cell,
+}: let
   inherit (inputs) std nixpkgs cells;
   inherit (cells) automation;
   inherit (automation.packages) sync-ssh-keys;
   inherit (nixpkgs) openssh shadow cacert findutils bashInteractive;
-in
-{
+in {
   sshd-github = std.lib.ops.mkOperable {
     package = openssh;
-    runtimeInputs = [ shadow cacert findutils ];
+    runtimeInputs = [shadow cacert findutils];
     runtimeShell = bashInteractive;
     runtimeScript = ''
       #################
@@ -55,7 +56,7 @@ in
 
       # shellcheck disable=SC2086
       ${openssh}/bin/sshd \
-        -d -D -f "$SSHD_CONFIG" \
+        -D -f "$SSHD_CONFIG" \
         $HOST_KEYS_ARG \
         -o "AuthorizedKeysFile /etc/ssh/authorized_keys"
     '';
