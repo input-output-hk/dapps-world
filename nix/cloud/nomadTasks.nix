@@ -1,11 +1,12 @@
-{ inputs, cell }:
-let
+{
+  inputs,
+  cell,
+}: let
   inherit (cell) oci-images;
 
   # OCI-Image Namer
   ociNamer = oci: builtins.unsafeDiscardStringContext "${oci.imageName}:${oci.imageTag}";
-in
-{
+in {
   sshd-github = {
     env = {
       SSHD_CONFIG = "/local/sshd_config";
@@ -48,13 +49,13 @@ in
       }
     ];
     config.image = ociNamer oci-images.sshd-github;
-    config.ports = [ "ssh" ];
+    config.ports = ["ssh"];
     service = {
       name = "\${NOMAD_JOB_NAME}-sshd-github";
       tags = [
         "ingress"
         "traefik.enable=true"
-        "traefik.tcp.routers.\${NOMAD_JOB_NAME}-sshd-github.entrypoints=ssh-marlowe-preview"
+        "traefik.tcp.routers.\${NOMAD_JOB_NAME}-sshd-github.entrypoints=\${NOMAD_META_entrypoint}"
         "traefik.tcp.routers.\${NOMAD_JOB_NAME}-sshd-github.rule=HostSNI(`*`)"
       ];
       port = "ssh";
