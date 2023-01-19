@@ -12,31 +12,35 @@ in {
     runtimeInputs = [shadow cacert findutils];
     runtimeShell = bashInteractive;
     runtimeScript = ''
-      #################
-      # REQUIRED VARS #
-      #################
-      # SSHD_CONFIG
-      # GITHUB_TOKEN
-      # GITHUB_TEAMS
-      # USER_HOME
-
-      # shellcheck source=/dev/null
-      source ${cacert}/nix-support/setup-hook
+      #########################
+      # ENVIRONMENT VARIABLES #
+      #########################
+      # SSHD_CONFIG (required): path to an sshd config file
+      # GITHUB_TOKEN (required): token of user to query info about teams
+      # GITHUB_TEAMS (required): space separated list of github teams to authorize
+      # HOST_KEYS_DIR (default="/"): ssh host keys will be stored in $HOST_KEYS_DIR/etc/ssh
+      #                              should be a persistant directory
 
       [ -z "''${SSHD_CONFIG:-}" ] && echo "SSHD_CONFIG env var must be set -- aborting" && exit 1
       [ -z "''${GITHUB_TOKEN:-}" ] && echo "GITHUB_TOKEN env var must be set -- aborting" && exit 1
       [ -z "''${GITHUB_TEAMS:-}" ] && echo "GITHUB_TEAMS env var must be set -- aborting" && exit 1
+      HOST_KEYS_DIR=''${HOST_KEYS_DIR:-"/"}
+
+      # shellcheck source=/dev/null
+      source ${cacert}/nix-support/setup-hook
 
       # Setup Users
-      mkdir -p /var/empty /root
+      mkdir -p /var/empty /root /home/dev
 
       cat > /etc/passwd <<- EOF
         root:x:0:0:System administrator:/root:/bin/debug
+        dev:x:1000:0:Developer login:/home/dev:/bin/debug
         sshd:x:992:990:SSH privilege separation user:/var/empty:${shadow}/bin/nologin
       EOF
 
       cat > /etc/shadow <<- EOF
         root:*:1::::::
+        dev:*:1::::::
         sshd:!:1::::::
       EOF
 
@@ -58,7 +62,10 @@ in {
       ${openssh}/bin/sshd \
         -D -f "$SSHD_CONFIG" \
         $HOST_KEYS_ARG \
-        -o "AuthorizedKeysFile /etc/ssh/authorized_keys"
+        -o "AuthorizedKeysFile /etc/ssh/authorized_keys" \
+        -o "LogLevel DEBUG" \
+        -o "UsePAM No"
+
     '';
   };
 }
