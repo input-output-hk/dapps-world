@@ -5,11 +5,11 @@
   inherit (inputs) std nixpkgs cells;
   inherit (cells) automation;
   inherit (automation.packages) sync-ssh-keys;
-  inherit (nixpkgs) openssh shadow cacert findutils bashInteractive;
+  inherit (nixpkgs) openssh shadow cacert findutils bashInteractive gnused;
 in {
   sshd-github = std.lib.ops.mkOperable {
     package = openssh;
-    runtimeInputs = [shadow cacert findutils];
+    runtimeInputs = [shadow cacert findutils gnused];
     runtimeShell = bashInteractive;
     runtimeScript = ''
       #########################
