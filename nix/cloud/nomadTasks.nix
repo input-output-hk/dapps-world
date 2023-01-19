@@ -10,14 +10,15 @@ in {
   sshd-github = {
     env = {
       SSHD_CONFIG = "/local/sshd_config";
-      HOST_KEYS_DIR = "/";
     };
+    meta.host_keys_dir = "/"; # documenting default value
     template = [
       {
         change_mode = "restart";
         data = ''
           {{- with secret "kv/data/sshd-github/github_token" }}
-          GITHUB_TEAMS={{ env "NOMAD_META_sshd_github_teams" }}
+          HOST_KEYS_DIR={{ env "NOMAD_META_host_keys_dir" }}
+          GITHUB_TEAMS={{ env "NOMAD_META_github_teams" }}
           GITHUB_TOKEN={{ .Data.data.token }}
           {{ end -}}
         '';
