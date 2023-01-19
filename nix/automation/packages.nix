@@ -1,13 +1,11 @@
 {
   inputs,
-  cell
-}:
-let
+  cell,
+}: let
   inherit (inputs) nixpkgs;
   inherit (nixpkgs) buildGoModule fetchFromGitHub;
   inherit (nixpkgs.lib) fakeHash;
-in
-{
+in {
   sync-ssh-keys = buildGoModule {
     pname = "sync-ssh-keys";
     version = "v0.5.0";
