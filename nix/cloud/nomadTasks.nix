@@ -33,6 +33,7 @@ in {
 
           X11Forwarding no
 
+          PermitRootLogin no
           GatewayPorts no
           PasswordAuthentication no
           KbdInteractiveAuthentication yes

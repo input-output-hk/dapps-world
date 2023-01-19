@@ -29,17 +29,20 @@ in {
       # shellcheck source=/dev/null
       source ${cacert}/nix-support/setup-hook
 
+      # rewrite /bin/debug to /bin/debug-shell as a proper shell
+      sed 's|exec /nix/store/.*bash|& "$@"|' /bin/debug > /bin/debug-shell
+
       # Setup Users
       mkdir -p /var/empty /root /home/dev
 
       cat > /etc/passwd <<- EOF
-        root:x:0:0:System administrator:/root:/bin/debug
-        dev:x:1000:0:Developer login:/home/dev:/bin/debug
+        root:x:0:0:System administrator:/root:/bin/runtime
+        dev:x:1000:0:Developer login:/home/dev:/bin/debug-shell
         sshd:x:992:990:SSH privilege separation user:/var/empty:${shadow}/bin/nologin
       EOF
 
       cat > /etc/shadow <<- EOF
-        root:*:1::::::
+        root:!:1::::::
         dev:*:1::::::
         sshd:!:1::::::
       EOF
@@ -64,7 +67,7 @@ in {
         $HOST_KEYS_ARG \
         -o "AuthorizedKeysFile /etc/ssh/authorized_keys" \
         -o "LogLevel DEBUG" \
-        -o "UsePAM No"
+        -o "UsePAM no"
 
     '';
   };
