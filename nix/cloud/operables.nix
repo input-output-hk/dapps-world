@@ -31,6 +31,7 @@ in {
 
       # rewrite /bin/debug to /bin/debug-shell as a proper shell
       sed 's|exec /nix/store/.*bash|& "$@"|' /bin/debug > /bin/debug-shell
+      chmod 755 /bin/debug-shell
 
       # Setup Users
       mkdir -p /var/empty /root /home/dev
