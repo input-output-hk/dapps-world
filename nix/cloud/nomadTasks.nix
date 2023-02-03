@@ -10,11 +10,13 @@ in {
   sshd-github = {
     env = {
       SSHD_CONFIG = "/local/sshd_config";
+      HOST_KEYS = "/secrets/ssh_host_rsa_key /secrets/ssh_host_ed25519_key";
     };
     meta.host_keys_dir = "/"; # documenting default value
     template = [
       {
         change_mode = "restart";
+        perms = "700";
         data = ''
           {{- with secret "kv/data/sshd-github/github_token" }}
           HOST_KEYS_DIR={{ env "NOMAD_META_host_keys_dir" }}
@@ -24,6 +26,24 @@ in {
         '';
         destination = "/secrets/github-token.env";
         env = true;
+      }
+      {
+        change_mode = "restart";
+        perms = "700";
+        data = ''
+          {{ $keyPath := "kv/data/sshd-github/host_keys" }}
+          {{- with secret $keyPath }}{{ .Data.data.rsa }}{{ end -}}
+        '';
+        destination = "/secrets/ssh_host_rsa_key";
+      }
+      {
+        change_mode = "restart";
+        perms = "700";
+        data = ''
+          {{ $keyPath := "kv/data/sshd-github/host_keys" }}
+          {{- with secret $keyPath }}{{ .Data.data.ed25519 }}{{ end -}}
+        '';
+        destination = "/secrets/ssh_host_ed25519_key";
       }
       {
         data = ''
@@ -53,12 +73,12 @@ in {
     config.image = ociNamer oci-images.sshd-github;
     config.ports = ["ssh"];
     service = {
-      name = "\${NOMAD_JOB_NAME}-sshd-github";
+      name = "\${NOMAD_NAMESPACE}-\${NOMAD_JOB_NAME}";
       tags = [
         "ingress"
         "traefik.enable=true"
-        "traefik.tcp.routers.\${NOMAD_JOB_NAME}-sshd-github.entrypoints=\${NOMAD_META_entrypoint}"
-        "traefik.tcp.routers.\${NOMAD_JOB_NAME}-sshd-github.rule=HostSNI(`*`)"
+        "traefik.tcp.routers.\${NOMAD_NAMESPACE}-\${NOMAD_JOB_NAME}.entrypoints=\${NOMAD_META_entrypoint}"
+        "traefik.tcp.routers.\${NOMAD_NAMESPACE}-\${NOMAD_JOB_NAME}.rule=HostSNI(`*`)"
       ];
       port = "ssh";
     };

@@ -5,7 +5,7 @@
   inherit (inputs.data-merge) append merge update;
   inherit (inputs.bitte-cells) patroni tempo vector;
   inherit (inputs.cardano-world) cardano;
-  inherit (cell) constants;
+  inherit (cell) constants nomadTasks;
 
   mkDbSyncJob = environment: let
     jobname = "db-sync-${environment}";
@@ -114,33 +114,77 @@ in {
         };
       };
   };
-  plutus = {
-    benchmark = {
-      job.benchmark = {
-        datacenters = ["us-east-1"];
-        type = "service";
-        namespace = "plutus";
 
-        constraint = [
-          {
-            attribute = "\${node.class}";
-            operator = "=";
-            value = "plutus-benchmark";
-          }
-        ];
-        spread = [
-          {
-            attribute = "\${node.datacenter}";
-            weight = "100";
-          }
-        ];
-        group.benchmark = {
-          count = 1;
-          task.benchmark = {
-            drivier = "exec";
-            config = {
-              command = "/usr/bin/env bash";
-            };
+  marlowe = {
+    sshd-github.job.sshd-github = {
+      id = "sshd-github";
+      namespace = "marlowe";
+      datacenters = ["us-east-1" "eu-central-1" "eu-west-1"];
+      type = "service";
+      priority = 50;
+
+      group.sshd-github = {
+        network.port.ssh.to = 22;
+        task.sshd-github = merge nomadTasks.sshd-github {
+          meta = {
+            github_teams = "marlowe marlowe-admin";
+            entrypoint = "ssh-marlowe";
+          };
+          template = append [
+            {
+              destination = "/local/network.env";
+              change_mode = "noop";
+              data = ''
+                #!/bin/bash
+                {{- range services }}
+                {{- if .Name | contains "marlowe-runtime" }}
+                {{- range service .Name }}
+                {{-
+                  $environment := .Name
+                                  | regexReplaceAll "marlowe-runtime-(.*)-marlowe-runtime-(.*)" "$1"
+                                  | toUpper
+                -}}
+                {{-
+                  $portname := .Name
+                               | regexReplaceAll "marlowe-runtime-(.*)-marlowe-runtime-(.*)" "$2"
+                               | replaceAll "-" "_"
+                               | toUpper
+                -}}
+                {{ $environment }}_{{$portname}}_IP={{ .Address }}
+                {{ $environment }}_{{$portname}}_PORT={{ .Port }}
+                {{ end -}}
+                {{ end -}}
+                {{ end -}}
+              '';
+            }
+          ];
+        };
+      };
+    };
+  };
+
+  plutus = {
+    sshd-github.job.sshd-github = {
+      id = "sshd-github";
+      namespace = "plutus";
+      datacenters = ["us-east-1" "eu-central-1" "eu-west-1"];
+      type = "service";
+      priority = 50;
+
+      constraint = [
+        {
+          attribute = "\${node.class}";
+          operator = "=";
+          value = "plutus-benchmark";
+        }
+      ];
+      group.sshd-github = {
+        count = 1;
+        network.port.ssh.to = 22;
+        task.sshd-github = merge nomadTasks.sshd-github {
+          meta = {
+            github_teams = "plutus-core plutus-tools";
+            entrypoint = "ssh-plutus";
           };
         };
       };

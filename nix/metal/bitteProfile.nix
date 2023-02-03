@@ -34,7 +34,6 @@ in {
       binaryCaches = ["https://hydra.iohk.io"];
       binaryCachePublicKeys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
     };
-
     cluster = {
       s3CachePubKey = lib.fileContents ./encrypted/nix-public-key-file;
       flakePath = "${inputs.self}";
@@ -109,6 +108,16 @@ in {
                 node_class = "marlowe";
               }
             )
+            ++ [
+              {
+                # Need exactly one plutus benchmarking machine
+                region = "us-east-1";
+                instanceType = "i4i.4xlarge";
+                volumeSize = 250;
+                modules = defaultModules;
+                node_class = "plutus-benchmark";
+              }
+            ]
           )
           (args: let
             attrs =
@@ -188,48 +197,50 @@ in {
           ];
         };
 
-        routing =
-          let
-            tcpEntrypoints = {
-              ssh-marlowe-mainnet = 40022;
-              # middle number is testnet magic
-              ssh-marlowe-preprod = 40122;
-              ssh-marlowe-preview = 40222;
-            };
-          in {
-            instanceType = "t3a.small";
-            privateIP = "172.16.1.20";
-            subnet = cluster.vpc.subnets.core-2;
-            volumeSize = 30;
-            securityGroupRules = {
+        routing = let
+          tcpEntrypoints = {
+            ssh-marlowe = 4022;
+            ssh-plutus = 5022;
+          };
+        in {
+          instanceType = "t3a.small";
+          privateIP = "172.16.1.20";
+          subnet = cluster.vpc.subnets.core-2;
+          volumeSize = 30;
+          securityGroupRules =
+            {
               inherit (sr) internet internal ssh http https routing;
-            } // lib.mapAttrs (n: port: {
+            }
+            // lib.mapAttrs (n: port: {
               inherit port;
               cidrs = ["0.0.0.0/0"];
-            }) tcpEntrypoints;
+            })
+            tcpEntrypoints;
 
-            route53.domains = [
-              "*.${cluster.domain}"
-              "consul.${cluster.domain}"
-              "docker.${cluster.domain}"
-              "monitoring.${cluster.domain}"
-              "nomad.${cluster.domain}"
-              "vault.${cluster.domain}"
-            ];
+          route53.domains = [
+            cluster.domain
+            "*.${cluster.domain}"
+            "consul.${cluster.domain}"
+            "docker.${cluster.domain}"
+            "monitoring.${cluster.domain}"
+            "nomad.${cluster.domain}"
+            "vault.${cluster.domain}"
+          ];
 
-            modules = [
-              (bitte + /profiles/routing.nix)
-              {
-                services.oauth2_proxy.email.domains = ["iohk.io" "atixlabs.com"];
-                services.traefik.acmeDnsCertMgr = false;
-                services.traefik.useVaultBackend = true;
-                services.traefik.staticConfigOptions.entryPoints =
-                  lib.mapAttrs (_: port: {
-                    address = ":${toString port}";
-                  }) tcpEntrypoints;
-              }
-            ];
-          };
+          modules = [
+            (bitte + /profiles/routing.nix)
+            {
+              services.oauth2_proxy.email.domains = ["iohk.io" "atixlabs.com"];
+              services.traefik.acmeDnsCertMgr = false;
+              services.traefik.useVaultBackend = true;
+              services.traefik.staticConfigOptions.entryPoints =
+                lib.mapAttrs (_: port: {
+                  address = ":${toString port}";
+                })
+                tcpEntrypoints;
+            }
+          ];
+        };
       };
     };
   };

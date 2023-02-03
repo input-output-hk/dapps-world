@@ -10,6 +10,10 @@
       name = "registry.ci.iog.io/dapps-world-${name}";
       operable = operables.${name};
       debug = true;
+      options = {
+        nixUid = 1000;
+        initializeNixDatabase = true;
+      };
     };
 in {
   sshd-github = mkImage "sshd-github";

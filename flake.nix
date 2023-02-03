@@ -11,6 +11,7 @@
     # --- Auxiliary Nixpkgs ----------------------------------------
     # nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs.url = "github:NixOS/nixpkgs";
+    nixos.url = "nixpkgs";
     capsules = {
       # Until nixago is implemented, as HEAD currently removes fmt hooks
       url = "github:input-output-hk/devshell-capsules/8dcf0e917848abbe58c58fc5d49069c32cd2f585";
@@ -22,6 +23,8 @@
     # --------------------------------------------------------------
     cardano-world.url = "github:input-output-hk/cardano-world";
     tullia.url = "github:input-output-hk/tullia";
+    terranix.url = "github:terranix/terranix";
+    sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs = inputs: let
@@ -74,6 +77,8 @@
     )
     {
       infra = bitte.lib.mkNomadJobs "infra" nomadEnvs;
+      marlowe = bitte.lib.mkNomadJobs "marlowe" nomadEnvs;
+      plutus = bitte.lib.mkNomadJobs "plutus" nomadEnvs;
     }
     (inputs.tullia.fromStd {
       actions = inputs.std.harvest inputs.self ["cloud" "actions"];

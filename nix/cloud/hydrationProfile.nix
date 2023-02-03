@@ -29,8 +29,8 @@ in {
     cluster = {
       name = "dapps-world";
 
-      adminNames = ["parthiv.seetharaman"];
-      # adminGithubTeamNames = lib.mkForce [ "non-existent-team" ];
+      adminNames = ["parthiv.seetharaman" "shlevy"];
+      adminGithubTeamNames = lib.mkForce ["devops" "plutus-devops"];
       developerGithubTeamNames = ["marlowe" "plutus-core" "plutus-tools"];
       domain = "dapps.aws.iohkdev.io";
       kms = "arn:aws:kms:us-east-1:677160962006:key/e8ccc1e3-c590-42f9-bda3-f7a55dcd787c";
@@ -42,6 +42,7 @@ in {
       nomad.namespaces = {
         infra = {description = "Common services";};
         marlowe = {description = "marlowe services";};
+        plutus = {description = "plutus services";};
       };
     };
 
