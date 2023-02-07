@@ -241,6 +241,22 @@ in {
             }
           ];
         };
+
+        runtime-demo = {
+          instanceType = "t3a.small";
+          privateIP = "172.16.0.30";
+          subnet = cluster.vpc.subnets.core-1;
+          volumeSize = 1500;
+
+          modules = [
+            (bitte + /profiles/common.nix)
+            {
+              virtualisation.docker.enable = true;
+            }
+          ];
+
+          securityGroupRules = {inherit (sr) internet internal ssh;};
+        };
       };
     };
   };
