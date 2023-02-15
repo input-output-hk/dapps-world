@@ -114,8 +114,37 @@ in {
                 region = "us-east-1";
                 instanceType = "i4i.4xlarge";
                 volumeSize = 250;
-                modules = defaultModules;
+                modules =
+                  defaultModules
+                  ++ [
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["plutus-persist-ssh"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
+                    {
+                      virtualisation.docker.extraOptions = "--storage-opt=dm.basesize=50G";
+                    }
+                  ];
                 node_class = "plutus-benchmark";
+              }
+              {
+                region = "us-east-1";
+                instanceType = "t3a.micro";
+                volumeSize = 250;
+                modules =
+                  defaultModules
+                  ++ [
+                    (
+                      bittelib.mkNomadHostVolumesConfig
+                      ["plutus-persist-cardano-node-local"]
+                      (n: "/var/lib/nomad-volumes/${n}")
+                    )
+                    {
+                      virtualisation.docker.extraOptions = "--storage-opt=dm.basesize=50G";
+                    }
+                  ];
+                node_class = "plutus-djed";
               }
             ]
           )
@@ -201,6 +230,7 @@ in {
           tcpEntrypoints = {
             ssh-marlowe = 4022;
             ssh-plutus = 5022;
+            ssh-plutus-djed = 6022;
           };
         in {
           instanceType = "t3a.small";

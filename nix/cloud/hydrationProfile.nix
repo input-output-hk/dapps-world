@@ -29,7 +29,7 @@ in {
     cluster = {
       name = "dapps-world";
 
-      adminNames = ["parthiv.seetharaman" "shlevy"];
+      adminNames = ["parthiv.seetharaman"];
       adminGithubTeamNames = lib.mkForce ["devops" "plutus-devops"];
       developerGithubTeamNames = ["marlowe" "plutus-core" "plutus-tools"];
       domain = "dapps.aws.iohkdev.io";
