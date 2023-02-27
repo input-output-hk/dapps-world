@@ -123,14 +123,14 @@ in {
                       (n: "/var/lib/nomad-volumes/${n}")
                     )
                     {
-                      virtualisation.docker.extraOptions = "--storage-opt=dm.basesize=50G";
+                      virtualisation.docker.extraOptions = "--storage-driver=devicemapper --storage-opt=dm.basesize=50G";
                     }
                   ];
                 node_class = "plutus-benchmark";
               }
               {
                 region = "us-east-1";
-                instanceType = "t3a.micro";
+                instanceType = "t3a.medium";
                 volumeSize = 250;
                 modules =
                   defaultModules
@@ -141,7 +141,7 @@ in {
                       (n: "/var/lib/nomad-volumes/${n}")
                     )
                     {
-                      virtualisation.docker.extraOptions = "--storage-opt=dm.basesize=50G";
+                      virtualisation.docker.extraOptions = "--storage-driver=devicemapper --storage-opt=dm.basesize=100G";
                     }
                   ];
                 node_class = "plutus-djed";

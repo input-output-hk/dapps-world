@@ -11,7 +11,7 @@
     # --- Auxiliary Nixpkgs ----------------------------------------
     # nixpkgs.follows = "bitte/nixpkgs";
     nixpkgs.url = "github:NixOS/nixpkgs";
-    nixos.url = "nixpkgs";
+    nixos.follows = "nixpkgs";
     capsules = {
       # Until nixago is implemented, as HEAD currently removes fmt hooks
       url = "github:input-output-hk/devshell-capsules/8dcf0e917848abbe58c58fc5d49069c32cd2f585";
@@ -25,11 +25,12 @@
     tullia.url = "github:input-output-hk/tullia";
     terranix.url = "github:terranix/terranix";
     sops-nix.url = "github:Mic92/sops-nix";
+    marlowe-cardano.url = "github:input-output-hk/marlowe-cardano";
   };
 
   outputs = inputs: let
     inherit (inputs) bitte;
-    inherit (inputs.self.x86_64-linux.cloud) nomadEnvs;
+    inherit (inputs.self.x86_64-linux) cloud marlowe plutus;
   in
     inputs.std.growOn
     {
@@ -37,6 +38,9 @@
       cellsFrom = ./nix;
       # debug = ["cells" "cloud" "nomadEnvs"];
       cellBlocks = with inputs.std.blockTypes; [
+        (functions "nixosProfiles")
+        (data "nixosHosts")
+        (functions "terraModules")
         (data "nomadEnvs")
         (data "nomadTasks")
         (data "constants")
@@ -76,14 +80,19 @@
         }
     )
     {
-      infra = bitte.lib.mkNomadJobs "infra" nomadEnvs;
-      marlowe = bitte.lib.mkNomadJobs "marlowe" nomadEnvs;
-      plutus = bitte.lib.mkNomadJobs "plutus" nomadEnvs;
+      infra = bitte.lib.mkNomadJobs "infra" cloud.nomadEnvs;
+      marlowe = bitte.lib.mkNomadJobs "marlowe" marlowe.nomadEnvs;
+      plutus = bitte.lib.mkNomadJobs "plutus" plutus.nomadEnvs;
     }
     (inputs.tullia.fromStd {
       actions = inputs.std.harvest inputs.self ["cloud" "actions"];
       tasks = inputs.std.harvest inputs.self ["automation" "pipelines"];
-    });
+    })
+    {
+      nixosConfigurations = {
+        plutus-benchmark = inputs.self.x86_64-linux.plutus.nixosHosts.benchmark;
+      };
+    };
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
     extra-substituters = ["https://cache.iog.io"];
