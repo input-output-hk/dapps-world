@@ -86,7 +86,6 @@ in {
     driver = "docker";
     kill_signal = "SIGINT";
     kill_timeout = "30s";
-    resources.cpu = 2000;
     resources.memory = 2048;
     vault = {
       change_mode = "noop";

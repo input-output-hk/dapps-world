@@ -18,12 +18,14 @@
     vim
     emacs
     nix
+    curl
+    tmux
     ;
 in {
   sshd-github = std.lib.ops.mkOperable {
     package = openssh;
     runtimeInputs = [shadow cacert findutils gnused];
-    debugInputs = [git vim emacs nix];
+    debugInputs = [git vim emacs nix curl tmux];
     runtimeShell = bashInteractive;
     runtimeScript = ''
       #########################
@@ -56,7 +58,6 @@ in {
         allow-import-from-derivation = true
         substituters = https://cache.nixos.org/
         trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-        store = /local/nix
       EOF
 
       # rewrite /bin/debug to /bin/debug-shell as a proper shell

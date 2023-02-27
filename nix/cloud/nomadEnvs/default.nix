@@ -163,31 +163,4 @@ in {
     };
   };
 
-  plutus = {
-    sshd-github.job.sshd-github = {
-      id = "sshd-github";
-      namespace = "plutus";
-      datacenters = ["us-east-1" "eu-central-1" "eu-west-1"];
-      type = "service";
-      priority = 50;
-
-      constraint = [
-        {
-          attribute = "\${node.class}";
-          operator = "=";
-          value = "plutus-benchmark";
-        }
-      ];
-      group.sshd-github = {
-        count = 1;
-        network.port.ssh.to = 22;
-        task.sshd-github = merge nomadTasks.sshd-github {
-          meta = {
-            github_teams = "plutus-core plutus-tools";
-            entrypoint = "ssh-plutus";
-          };
-        };
-      };
-    };
-  };
-}
+  }
