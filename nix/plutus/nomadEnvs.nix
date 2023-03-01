@@ -87,7 +87,7 @@ in {
           sshd-github = merge nomadTasks.sshd-github {
             meta = {
               github_teams = "djed-plutus";
-              entrypoint = "ssh-djed-plutus";
+              entrypoint = "ssh-plutus-djed";
             };
           };
         };
