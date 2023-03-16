@@ -1,30 +1,24 @@
-{inputs}: let
-  inherit (inputs) self data-merge cardano-world nixpkgs bitte-cells cells;
+{inputs, cell}: let
+  inherit (inputs) data-merge cardano-world nixpkgs bitte-cells cells marlowe-cardano;
 
   inherit (cardano-world) cardano;
   inherit (bitte-cells) vector;
   inherit (data-merge) merge append;
   inherit (nixpkgs.lib) genAttrs head splitString concatStringsSep toUpper replaceStrings;
 
-  inherit (self) nomadTasks;
+  inherit (marlowe-cardano) nomadTasks;
   inherit (cells.cloud.constants) baseDomain;
 
   # ports to configure for each task
   servicePorts = [
-    "chain_indexer_http"
     "marlowe_chain_sync"
     "marlowe_chain_sync_query"
     "marlowe_chain_sync_command"
-    "chain_sync_http"
-    "indexer_http"
     "marlowe_sync"
     "marlowe_header_sync"
     "marlowe_query"
-    "sync_http"
     "tx"
-    "tx_http"
     "proxy"
-    "proxy_http"
   ];
 
   # environments to configure the runtime for
@@ -70,7 +64,7 @@
       // {
         inherit namespace datacenters id type priority;
 
-        group.marlowe-runtime =
+        group.main =
           merge
           # task.vector ...
           # https://github.com/input-output-hk/bitte-cells/blob/main/cells/vector/nomadTask.nix
