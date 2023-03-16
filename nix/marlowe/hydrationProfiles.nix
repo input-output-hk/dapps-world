@@ -5,7 +5,7 @@
   workload-policies-marlowe-runtime = {
     tf.hydrate-cluster.configuration.locals.policies = {
       consul.marlowe-runtime = {
-        # chainseek also needs to read the cardano config
+        # chain-indexer also needs to read the cardano config
         key_prefix."config/cardano" = {
           policy = "read";
           intentions = "deny";
@@ -16,9 +16,10 @@
         };
       };
       vault.marlowe-runtime = {
-        # Only chainseek task in marlowe-runtime needs secrets to access db
-        path."kv/data/chainseek/*".capabilities = ["read" "list"];
-        path."kv/metadata/chainseek/*".capabilities = ["read" "list"];
+        path."kv/data/chainsync/*".capabilities = ["read" "list"];
+        path."kv/metadata/chainsync/*".capabilities = ["read" "list"];
+        path."kv/data/marlowe/*".capabilities = ["read" "list"];
+        path."kv/metadata/marlowe/*".capabilities = ["read" "list"];
         path."consul/creds/marlowe-runtime".capabilities = ["read"];
       };
     };

@@ -1,5 +1,5 @@
 {inputs}: let
-  inherit (inputs) self data-merge cardano-world nixpkgs bitte-cells;
+  inherit (inputs) self data-merge cardano-world nixpkgs bitte-cells cells;
 
   inherit (cardano-world) cardano;
   inherit (bitte-cells) vector;
@@ -7,19 +7,24 @@
   inherit (nixpkgs.lib) genAttrs head splitString concatStringsSep toUpper replaceStrings;
 
   inherit (self) nomadTasks;
+  inherit (cells.cloud.constants) baseDomain;
 
   # ports to configure for each task
   servicePorts = [
-    "chainseekd"
-    "chainseekd_query"
-    "chainseekd_command"
-    "history"
-    "history_query"
-    "history_sync"
-    "discovery"
-    "discovery_query"
-    "discovery_sync"
+    "chain_indexer_http"
+    "marlowe_chain_sync"
+    "marlowe_chain_sync_query"
+    "marlowe_chain_sync_command"
+    "chain_sync_http"
+    "indexer_http"
+    "marlowe_sync"
+    "marlowe_header_sync"
+    "marlowe_query"
+    "sync_http"
     "tx"
+    "tx_http"
+    "proxy"
+    "proxy_http"
   ];
 
   # environments to configure the runtime for
@@ -39,8 +44,7 @@
 
     id = jobname;
     namespace = "marlowe";
-    # TODO: get base domain from dapps-world if its an input to this flake
-    domain = "${jobname}.dapps.aws.iohkdev.io";
+    domain = "${jobname}.${baseDomain}";
     scaling = 1;
 
     datacenters = ["us-east-1" "eu-central-1" "eu-west-1"];
@@ -103,10 +107,11 @@
                 inherit
                   (nomadTasks)
                   chain-indexer
-                  chainseekd
-                  marlowe-history
-                  marlowe-discovery
+                  marlowe-chain-sync
+                  marlowe-indexer
+                  marlowe-sync
                   marlowe-tx
+                  marlowe-proxy
                   ;
               };
             }
