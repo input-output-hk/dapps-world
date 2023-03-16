@@ -133,12 +133,24 @@ in {
             namespace."marlowe" = {
               policy = "write";
               capabilities = [
-                "submit-job"
-                "dispatch-job"
-                "read-logs"
                 "alloc-exec"
-                "alloc-node-exec"
                 "alloc-lifecycle"
+                "alloc-node-exec"
+                "csi-list-volume"
+                "csi-mount-volume"
+                "csi-read-volume"
+                "csi-register-plugin"
+                "csi-write-volume"
+                "dispatch-job"
+                "list-jobs"
+                "list-scaling-policies"
+                "read-fs"
+                "read-job"
+                "read-job-scaling"
+                "read-logs"
+                "read-scaling-policy"
+                "scale-job"
+                "submit-job"
               ];
             };
           };
