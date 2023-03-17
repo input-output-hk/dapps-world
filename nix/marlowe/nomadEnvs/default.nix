@@ -11,14 +11,20 @@
 
   # ports to configure for each task
   servicePorts = [
+    "chain_indexer_http"
     "marlowe_chain_sync"
     "marlowe_chain_sync_query"
     "marlowe_chain_sync_command"
+    "chain_sync_http"
+    "indexer_http"
     "marlowe_sync"
     "marlowe_header_sync"
     "marlowe_query"
+    "sync_http"
     "tx"
+    "tx_http"
     "proxy"
+    "proxy_http"
   ];
 
   # environments to configure the runtime for
@@ -33,7 +39,7 @@
 
   # marlowe namespace is created and configured in dapps-world
 
-  mkRuntimeJob = environment: let
+  mkRuntimeJob = environment: tag: let
     jobname = "marlowe-runtime-${environment}";
 
     id = jobname;
@@ -99,8 +105,8 @@
                   };
                 };
                 inherit
-                  (nomadTasks)
-                  chain-indexer
+                  (nomadTasks.${tag})
+                  marlowe-chain-indexer
                   marlowe-chain-sync
                   marlowe-indexer
                   marlowe-sync
@@ -114,8 +120,8 @@
   };
 in {
   marlowe = {
-    marlowe-runtime-preprod = mkRuntimeJob "preprod";
-    marlowe-runtime-preview = mkRuntimeJob "preview";
-    marlowe-runtime-mainnet = mkRuntimeJob "mainnet";
+    marlowe-runtime-preprod-latest = mkRuntimeJob "preprod" "latest";
+    marlowe-runtime-preview-latest = mkRuntimeJob "preview" "latest";
+    marlowe-runtime-mainnet-latest = mkRuntimeJob "mainnet" "latest";
   };
 }
