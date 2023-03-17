@@ -17672,11 +17672,11 @@
         "tullia": "tullia_5"
       },
       "locked": {
-        "lastModified": 1679064443,
-        "narHash": "sha256-L1Br0jr8wSVBEoqUvf0F9AxjR1DLmHF58iT6Is6mB+g=",
+        "lastModified": 1679067040,
+        "narHash": "sha256-53Ga6JsLlEg0WTcGTlu+DWJ3l/7PV5i0F4RhJjooY/U=",
         "owner": "input-output-hk",
         "repo": "marlowe-cardano",
-        "rev": "a5e4ab3ebca1a2222dfb3fe347dcd4d67b9f5749",
+        "rev": "b977d31ac74607abcf59e82efd812fe58fa92760",
         "type": "github"
       },
       "original": {
