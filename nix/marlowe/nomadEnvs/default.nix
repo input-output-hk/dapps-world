@@ -103,6 +103,10 @@
                     LOCAL_ROOTS_SRV_DNS = "_${jobname}-node._tcp.service.consul";
                     PUBLIC_ROOTS_SRV_DNS = "_${environment}-node._tcp.service.consul";
                   };
+                  resources = {
+                    cpu = 4000;
+                    memory = 8192;
+                  };
                 };
                 inherit
                   (nomadTasks.${tag})
