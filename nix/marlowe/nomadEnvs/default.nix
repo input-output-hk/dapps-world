@@ -39,7 +39,7 @@
 
   # marlowe namespace is created and configured in dapps-world
 
-  mkRuntimeJob = environment: tag: let
+  mkRuntimeJob = environment: let
     jobname = "marlowe-runtime-${environment}";
 
     id = jobname;
@@ -109,7 +109,7 @@
                   };
                 };
                 inherit
-                  (nomadTasks.${tag})
+                  (nomadTasks)
                   marlowe-chain-indexer
                   marlowe-chain-sync
                   marlowe-indexer
@@ -124,8 +124,8 @@
   };
 in {
   marlowe = {
-    marlowe-runtime-preprod-latest = mkRuntimeJob "preprod" "latest";
-    marlowe-runtime-preview-latest = mkRuntimeJob "preview" "latest";
-    marlowe-runtime-mainnet-latest = mkRuntimeJob "mainnet" "latest";
+    marlowe-runtime-preprod = mkRuntimeJob "preprod";
+    marlowe-runtime-preview = mkRuntimeJob "preview";
+    marlowe-runtime-mainnet = mkRuntimeJob "mainnet";
   };
 }
