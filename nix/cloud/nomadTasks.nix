@@ -22,6 +22,7 @@ in {
           HOST_KEYS_DIR={{ env "NOMAD_META_host_keys_dir" }}
           GITHUB_TEAMS={{ env "NOMAD_META_github_teams" }}
           GITHUB_TOKEN={{ .Data.data.token }}
+          EXTRA_KEYS={{ env "NOMAD_META_extra_keys" }}
           {{ end -}}
         '';
         destination = "/secrets/github-token.env";
