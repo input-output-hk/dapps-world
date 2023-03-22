@@ -12,7 +12,11 @@ in {
       SSHD_CONFIG = "/local/sshd_config";
       HOST_KEYS = "/secrets/ssh_host_rsa_key /secrets/ssh_host_ed25519_key";
     };
-    meta.host_keys_dir = "/"; # documenting default value
+    meta = {
+      # Default Values
+      host_keys_dir = "/";
+      extra_keys = "";
+    };
     template = [
       {
         change_mode = "restart";
