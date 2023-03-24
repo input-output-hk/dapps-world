@@ -26,7 +26,6 @@ in {
           HOST_KEYS_DIR={{ env "NOMAD_META_host_keys_dir" }}
           GITHUB_TEAMS={{ env "NOMAD_META_github_teams" }}
           GITHUB_TOKEN={{ .Data.data.token }}
-          EXTRA_KEYS={{ env "NOMAD_META_extra_keys" | toJSON }}
           {{ end -}}
         '';
         destination = "/secrets/github-token.env";
@@ -49,6 +48,14 @@ in {
           {{- with secret $keyPath }}{{ .Data.data.ed25519 }}{{ end -}}
         '';
         destination = "/secrets/ssh_host_ed25519_key";
+      }
+      {
+        change_mode = "restart";
+        data = ''
+          EXTRA_KEYS={{ env "NOMAD_META_extra_keys" | toJSON }}
+        '';
+        destination = "/local/extra_keys.env";
+        env = true;
       }
       {
         data = ''
