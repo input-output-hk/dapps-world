@@ -160,12 +160,12 @@ in {
                 {{- range service .Name }}
                 {{-
                   $environment := .Name
-                                  | regexReplaceAll "marlowe-runtime-(.*)-marlowe-runtime-(.*)" "$1"
+                                  | regexReplaceAll "marlowe-runtime-(.*)-main-(.*)" "$1"
                                   | toUpper
                 -}}
                 {{-
                   $portname := .Name
-                               | regexReplaceAll "marlowe-runtime-(.*)-marlowe-runtime-(.*)" "$2"
+                               | regexReplaceAll "marlowe-runtime-(.*)-main-(.*)" "$2"
                                | replaceAll "-" "_"
                                | toUpper
                 -}}
