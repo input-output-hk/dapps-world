@@ -91,7 +91,7 @@ in {
             >> /etc/ssh/authorized_keys
       done
 
-      if [ -z "''${EXTRA_KEYS:-}" ]
+      if [ -n "''${EXTRA_KEYS:-}" ]
       then
         cat >> /etc/ssh/authorized_keys <<- EOF
 
@@ -99,7 +99,7 @@ in {
           # Extra keys #
           ##############
 
-          $EXTRA_KEYS
+          $(echo -e "$EXTRA_KEYS")
 
           # END
       EOF
