@@ -129,6 +129,10 @@ in {
           meta = {
             github_teams = "marlowe marlowe-admin";
             entrypoint = "ssh-marlowe";
+            extra_keys = ''
+              # marlowe-cardano Github Actions
+              ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHKVEWw43E1Uvc8JT89EX8PD5uCQoJfbDn+A6PEmUfaT marlowebuild@iohk.io
+            '';
           };
           template = append [
             {

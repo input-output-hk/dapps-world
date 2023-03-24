@@ -12,7 +12,11 @@ in {
       SSHD_CONFIG = "/local/sshd_config";
       HOST_KEYS = "/secrets/ssh_host_rsa_key /secrets/ssh_host_ed25519_key";
     };
-    meta.host_keys_dir = "/"; # documenting default value
+    meta = {
+      # Default Values
+      host_keys_dir = "/";
+      extra_keys = "";
+    };
     template = [
       {
         change_mode = "restart";
@@ -44,6 +48,14 @@ in {
           {{- with secret $keyPath }}{{ .Data.data.ed25519 }}{{ end -}}
         '';
         destination = "/secrets/ssh_host_ed25519_key";
+      }
+      {
+        change_mode = "restart";
+        data = ''
+          EXTRA_KEYS={{ env "NOMAD_META_extra_keys" | toJSON }}
+        '';
+        destination = "/local/extra_keys.env";
+        env = true;
       }
       {
         data = ''

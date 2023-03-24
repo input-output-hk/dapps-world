@@ -25,7 +25,7 @@
     tullia.url = "github:input-output-hk/tullia";
     terranix.url = "github:terranix/terranix";
     sops-nix.url = "github:Mic92/sops-nix";
-    marlowe-cardano.url = "github:input-output-hk/marlowe-cardano?ref=jhbertra/deployment";
+    marlowe-cardano.url = "github:input-output-hk/marlowe-cardano";
   };
 
   outputs = inputs: let

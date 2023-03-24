@@ -1,5 +1,9 @@
-{inputs, cell}: let
+{
+  inputs,
+  cell,
+}: let
   inherit (inputs) data-merge cardano-world nixpkgs bitte-cells cells marlowe-cardano;
+  inherit (cells) cloud;
 
   inherit (cardano-world) cardano;
   inherit (bitte-cells) vector;
@@ -7,7 +11,7 @@
   inherit (nixpkgs.lib) genAttrs head splitString concatStringsSep toUpper replaceStrings;
 
   inherit (marlowe-cardano) nomadTasks;
-  inherit (cells.cloud.constants) baseDomain;
+  inherit (cloud.constants) baseDomain;
 
   # ports to configure for each task
   servicePorts = [
@@ -127,5 +131,54 @@ in {
     marlowe-runtime-preprod = mkRuntimeJob "preprod";
     marlowe-runtime-preview = mkRuntimeJob "preview";
     marlowe-runtime-mainnet = mkRuntimeJob "mainnet";
+    sshd-github.job.sshd-github = {
+      id = "sshd-github";
+      namespace = "marlowe";
+      datacenters = ["us-east-1" "eu-central-1" "eu-west-1"];
+      type = "service";
+      priority = 50;
+
+      group.sshd-github = {
+        network.port.ssh.to = 22;
+        task.sshd-github = merge cloud.nomadTasks.sshd-github {
+          meta = {
+            github_teams = "marlowe marlowe-admin";
+            entrypoint = "ssh-marlowe";
+            extra_keys = ''
+              # marlowe-cardano Github Actions
+              ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHKVEWw43E1Uvc8JT89EX8PD5uCQoJfbDn+A6PEmUfaT marlowebuild@iohk.io
+            '';
+          };
+          template = append [
+            {
+              destination = "/local/network.env";
+              change_mode = "noop";
+              data = ''
+                #!/bin/bash
+                {{- range services }}
+                {{- if .Name | contains "marlowe-runtime" }}
+                {{- range service .Name }}
+                {{-
+                  $environment := .Name
+                                  | regexReplaceAll "marlowe-runtime-(.*)-main-(.*)" "$1"
+                                  | toUpper
+                -}}
+                {{-
+                  $portname := .Name
+                               | regexReplaceAll "marlowe-runtime-(.*)-main-(.*)" "$2"
+                               | replaceAll "-" "_"
+                               | toUpper
+                -}}
+                {{ $environment }}_{{$portname}}_IP={{ .Address }}
+                {{ $environment }}_{{$portname}}_PORT={{ .Port }}
+                {{ end -}}
+                {{ end -}}
+                {{ end -}}
+              '';
+            }
+          ];
+        };
+      };
+    };
   };
 }

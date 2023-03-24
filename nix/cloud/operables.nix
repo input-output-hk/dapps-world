@@ -35,6 +35,7 @@ in {
       # GITHUB_TOKEN (required): token of user to query info about teams
       # GITHUB_TEAMS (required): space separated list of github teams to authorize
       # HOST_KEYS (required): path to host keys to pass to the ssh daemon
+      # EXTRA_KEYS (optional): newline separated list of public key entries in OPENSSH format to add to authorized_keys
 
       [ -z "''${SSHD_CONFIG:-}" ] && echo "SSHD_CONFIG env var must be set -- aborting" && exit 1
       [ -z "''${GITHUB_TOKEN:-}" ] && echo "GITHUB_TOKEN env var must be set -- aborting" && exit 1
@@ -89,6 +90,20 @@ in {
             --github-team="$TEAM" \
             >> /etc/ssh/authorized_keys
       done
+
+      if [ -n "''${EXTRA_KEYS:-}" ]
+      then
+      cat >> /etc/ssh/authorized_keys <<- EOF
+
+        ##############
+        # Extra keys #
+        ##############
+
+        $(echo -e "$EXTRA_KEYS")
+
+        # END
+      EOF
+      fi
 
       HOST_KEYS_ARG=$(IFS=' '; for KEY in $HOST_KEYS; do echo -n "-o HostKey=$KEY "; done)
 
