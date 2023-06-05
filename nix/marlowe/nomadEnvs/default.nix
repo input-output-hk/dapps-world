@@ -29,6 +29,7 @@
     "tx_http"
     "proxy"
     "proxy_http"
+    "proxy_traced"
     "contract_http"
     "marlowe_load"
     "contract_query"
