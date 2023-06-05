@@ -29,6 +29,9 @@
     "tx_http"
     "proxy"
     "proxy_http"
+    "contract_http"
+    "marlowe_load"
+    "contract_query"
   ];
 
   # environments to configure the runtime for
@@ -120,6 +123,7 @@
                   marlowe-sync
                   marlowe-tx
                   marlowe-proxy
+                  marlowe-contract
                   ;
               };
             }
